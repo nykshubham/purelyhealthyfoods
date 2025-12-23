@@ -1,0 +1,62 @@
+---
+const today = new Date();
+---
+
+<footer class="bg-secondary text-white mt-12 py-16 rounded-t-4xl relative overflow-hidden">
+  <!-- Fancy Curve SVG at top handled by margin/border or explicit separator in Layout -->
+  
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+    <div class="grid md:grid-cols-5 gap-12 mb-12">
+      <div class="col-span-1 md:col-span-2">
+         <div class="flex items-center gap-4 mb-6">
+            <img 
+            src="https://raw.githubusercontent.com/nykshubham/purelyhealthyfoods/refs/heads/main/logo%20hd%20no%20background.png" 
+            alt="Logo" 
+            class="h-16 w-16 bg-white rounded-full p-1"
+           />
+           <span class="font-serif text-2xl font-bold">PurelyHealthyFoods</span>
+         </div>
+         <p class="text-green-100 max-w-sm">
+           Your daily dose of nutrition facts, food safety news, and healthy living guides. scientifically backed, beautifully served.
+         </p>
+      </div>
+      
+     <div class="col-span-1">
+          <h3 class="font-serif text-xl mb-4 text-accent">News & Insights</h3>
+          <ul class="space-y-2 text-sm">
+            <li><a href="/nutrition-news" class="hover:text-white transition-colors">Nutrition News</a></li>
+            <li><a href="/food-safety-alerts" class="hover:text-white transition-colors">Food Safety Alerts</a></li>
+            <li><a href="/ingredient-exposes" class="hover:text-white transition-colors">Ingredient Exposés</a></li>
+          </ul>
+      </div>
+
+      <div class="col-span-1">
+        <h3 class="font-serif text-xl mb-4 text-accent">Weight & Recipes</h3>
+        <ul class="space-y-2 text-sm">
+          <li><a href="/fat-loss-science" class="hover:text-white transition-colors">Fat-loss Science</a></li>
+          <li><a href="/meal-plans" class="hover:text-white transition-colors">Meal Plans</a></li>
+          <li><a href="/no-maida-alternatives" class="hover:text-white transition-colors">No-maida Recipes</a></li>
+          <li><a href="/high-protein-vegetarian" class="hover:text-white transition-colors">High-protein Veg</a></li>
+        </ul>
+      </div>
+      
+      <div class="col-span-1">
+        <h3 class="font-serif text-xl mb-4 text-accent">Company</h3>
+         <ul class="space-y-2 text-sm">
+          <li><a href="/about" class="hover:text-white transition-colors">About Us</a></li>
+           <li><a href="/privacy" class="hover:text-white transition-colors">Privacy Policy</a></li>
+           <li><a href="/terms" class="hover:text-white transition-colors">Terms of Service</a></li>
+           <li><a href="/contact" class="hover:text-white transition-colors">Contact</a></li>
+         </ul>
+      </div>
+    </div>
+
+    <div class="border-t border-green-800 pt-8 flex flex-col md:flex-row justify-between items-center text-sm text-green-200">
+      <p>&copy; {today.getFullYear()} PurelyHealthyFoods. Made with 🍊 & 🥬.</p>
+      <div class="flex gap-4 mt-4 md:mt-0">
+        <!-- Social placeholders -->
+        <a href="https://www.instagram.com/purelyhealthyfoods/" class="hover:text-white transition-colors">Instagram</a>
+      </div>
+    </div>
+  </div>
+</footer>

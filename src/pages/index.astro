@@ -1,0 +1,240 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { getCollection } from 'astro:content';
+import FormattedDate from '../components/FormattedDate.astro';
+import NewsTicker from '../components/NewsTicker.astro';
+
+// Fetch from new collections
+const news = (await getCollection('news')).sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+const editorials = (await getCollection('editorials')).sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+const research = (await getCollection('research')).sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+
+// Aggregate for display
+const featuredPost = editorials[0]; // Editorials make good featured stories
+const subFeatured = [research[0], news[0], news[1]].filter(Boolean); // Mix of research and news
+const recentNews = news.slice(0, 6); 
+---
+
+<Layout title="PurelyHealthyFoods - Trusted Nutrition News" description="Daily reporting on food safety, nutrition science, and metabolic health.">
+	
+  <NewsTicker />
+
+  <!-- Wavy Hero Section -->
+  <section class="relative bg-primary pt-20 pb-32 overflow-hidden">
+    <div class="absolute inset-0 z-0 opacity-10" style="background-image: url('https://www.transparenttextures.com/patterns/cubes.png');"></div>
+    
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
+      <span class="inline-block py-1 px-3 rounded-full bg-accent text-secondary text-sm font-bold tracking-widest uppercase mb-6 animate-pulse">
+        Evidence-Based Reporting
+      </span>
+      <h1 class="text-5xl md:text-7xl font-serif font-bold text-white mb-6 leading-tight">
+        Trusted Nutrition News <br/> <span class="text-surface-200 decoration-accent decoration-wavy underline underline-offset-8"> & Health Insights.</span>
+      </h1>
+      <p class="text-xl text-orange-100 max-w-2xl mx-auto mb-10 font-sans">
+        Daily food safety reports, nutrition science breakdowns, and research-backed guidance.
+      </p>
+      
+      <div class="flex flex-col sm:flex-row justify-center gap-4">
+        <a href="/news" class="px-8 py-4 bg-white text-primary font-bold rounded-full hover:bg-surface-200 transition-colors shadow-lg">
+          Latest News
+        </a>
+        <a href="/nutrition" class="px-8 py-4 bg-secondary text-white font-bold rounded-full hover:bg-green-800 transition-colors shadow-lg border border-transparent">
+           Nutrition Guides
+        </a>
+      </div>
+    </div>
+
+    <!-- Wavy Divider -->
+    <div class="absolute bottom-0 left-0 w-full leading-none z-20">
+      <svg class="block w-full h-12 md:h-24 text-beige" viewBox="0 0 1200 120" preserveAspectRatio="none">
+         <path d="M985.66,92.83C906.67,72,823.78,31,743.84,14.19c-82.26-17.34-168.06-16.33-250.45.39-57.84,11.73-114,31.07-172,41.86A600.21,600.21,0,0,1,0,27.35V120H1200V95.8C1132.19,118.92,1055.71,111.31,985.66,92.83Z" fill="currentColor"></path>
+      </svg>
+    </div>
+  </section>
+
+  <!-- Section: Latest News Stream -->
+  <section class="bg-beige pt-8 pb-12">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between items-end mb-8">
+        <div>
+          <h2 class="text-3xl font-serif font-bold text-secondary">Latest News Stream</h2>
+          <p class="text-gray-500 mt-2">Chronological updates on public health.</p>
+        </div>
+        <a href="/news" class="text-primary font-bold hover:text-secondary transition-colors underline decoration-2 underline-offset-4">View Wire &rarr;</a>
+      </div>
+
+      <div class="grid md:grid-cols-3 gap-8">
+        {recentNews.length > 0 ? recentNews.map((post) => (
+          <article class="bg-white p-6 rounded-3xl shadow-sm hover:shadow-md transition-all group border border-orange-50">
+             <div class="flex justify-between items-start mb-4">
+               <span class="text-xs font-bold text-primary bg-orange-50 px-2 py-1 rounded-md mb-2 inline-block">{post.data.category || 'News'}</span>
+               <span class="text-xs text-gray-400 bg-gray-50 px-2 py-1 rounded-md flex items-center gap-1">
+                 <svg class="w-3 h-3 text-secondary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                 Sources included
+               </span>
+             </div>
+             <h3 class="text-lg font-serif font-bold text-secondary mb-2 group-hover:text-primary transition-colors leading-tight">
+               <a href={`/news/${post.slug}/`}>{post.data.title}</a>
+             </h3>
+             <p class="text-sm text-gray-500 line-clamp-2 mb-4">{post.data.description}</p>
+             <div class="flex justify-between items-center mt-auto">
+                <span class="text-xs text-gray-400 flex items-center gap-1"><FormattedDate date={post.data.pubDate} /></span>
+                <a href={`/news/${post.slug}/`} class="text-sm font-bold text-secondary hover:underline">Read Brief &rarr;</a>
+             </div>
+          </article>
+        )) : (
+          <p class="col-span-3 text-center text-gray-500 py-8">No recent news.</p>
+        )}
+      </div>
+    </div>
+  </section>
+
+  <!-- Section: Featured Editorial (Bento Grid) -->
+  <section class="py-16 bg-white rounded-t-5xl relative z-30">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+       <h2 class="text-4xl font-serif font-bold text-secondary mb-12 text-center">Editorial <span class="text-primary italic">Deep Dives</span></h2>
+      
+       <div class="grid grid-cols-1 md:grid-cols-4 grid-rows-2 gap-6 h-auto md:h-[600px]">
+        {featuredPost && (
+          <a href={`/editorials/${featuredPost.slug}/`} class="md:col-span-2 md:row-span-2 relative group overflow-hidden rounded-4xl shadow-md cursor-pointer">
+            <img 
+              src={featuredPost.data.heroImage} 
+              alt={featuredPost.data.title} 
+              class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+            />
+            <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent opacity-90"></div>
+            <div class="absolute bottom-0 left-0 p-8 text-white z-20">
+              <div class="flex gap-2 mb-3">
+                 <span class="bg-accent text-secondary text-xs font-bold px-3 py-1 rounded-full uppercase inline-block">Cover Story</span>
+                 <span class="bg-black/50 backdrop-blur text-white text-xs font-bold px-3 py-1 rounded-full uppercase inline-flex items-center gap-1">
+                   <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg> Verified
+                 </span>
+              </div>
+              <h3 class="text-3xl font-serif font-bold leading-tight mb-2 group-hover:text-accent transition-colors">
+                {featuredPost.data.title}
+              </h3>
+              <p class="text-gray-200 line-clamp-2">{featuredPost.data.description}</p>
+            </div>
+          </a>
+        )}
+
+        {subFeatured.map((post, i) => (
+          <a href={post.collection === 'research' ? `/research/${post.slug}/` : `/news/${post.slug}/`} class={`md:col-span-2 relative group overflow-hidden rounded-4xl shadow-md cursor-pointer ${i === 0 ? 'bg-secondary' : 'bg-surface-200'}`}>
+             {i === 0 ? (
+                <div class="p-8 h-full flex flex-col justify-center text-white relative z-20">
+                  <h3 class="text-2xl font-serif font-bold mb-2 group-hover:underline decoration-white underline-offset-4">{post.data.title}</h3>
+                  <p class="text-green-100 text-sm line-clamp-2">{post.data.description}</p>
+                  <div class="mt-4 flex items-center gap-2 text-xs font-bold text-green-200">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path></svg>
+                    {post.collection === 'research' ? 'Study Review' : 'News Update'}
+                  </div>
+                </div>
+             ) : (
+               <>
+                <div class="p-8 h-full flex flex-col justify-center text-secondary relative z-20">
+                   <span class="text-xs font-bold text-primary mb-2 uppercase tracking-wider">Analysis</span>
+                   <h3 class="text-xl font-serif font-bold mb-2">{post.data.title}</h3>
+                   <span class="text-sm font-bold mt-auto hover:text-primary transition-colors flex items-center gap-1">
+                     Read Report &rarr;
+                   </span>
+                </div>
+               </>
+             )}
+          </a>
+        ))}
+        
+         <div class="md:col-span-1 hidden md:block bg-orange-100 rounded-4xl p-6 shadow-sm relative overflow-hidden group">
+           <div class="absolute inset-0 flex items-center justify-center">
+             <span class="text-8xl opacity-10 group-hover:scale-125 transition-transform duration-500">🧬</span>
+           </div>
+           <div class="relative z-10 h-full flex flex-col justify-end">
+             <p class="font-bold text-secondary">Clinical Trials</p>
+             <a href="/research" class="text-xs text-secondary/70 hover:underline">View Database &rarr;</a>
+           </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- What We Cover Section -->
+  <section class="py-20 bg-surface-100">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-12">
+        <h2 class="text-3xl font-serif font-bold text-secondary">Our Editorial Coverage</h2>
+        <p class="text-gray-500">Rigorous standards for every topic we report on.</p>
+      </div>
+      
+      <div class="grid md:grid-cols-3 gap-8">
+        <div class="bg-white p-8 rounded-3xl shadow-sm border border-gray-100">
+          <div class="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center text-secondary mb-4 text-2xl">🛡️</div>
+          <h3 class="text-xl font-bold text-secondary mb-2">Food Safety</h3>
+          <p class="text-gray-500 text-sm leading-relaxed">
+            Real-time monitoring of FDA/USDA recalls, outbreaks, and contaminant reports, verified against official databases.
+          </p>
+        </div>
+        
+        <div class="bg-white p-8 rounded-3xl shadow-sm border border-gray-100">
+          <div class="w-12 h-12 bg-orange-100 rounded-xl flex items-center justify-center text-primary mb-4 text-2xl">🔬</div>
+          <h3 class="text-xl font-bold text-secondary mb-2">Nutrition Science</h3>
+          <p class="text-gray-500 text-sm leading-relaxed">
+            Deep dives into macronutrients and micronutrients, citing peer-reviewed journals and removing industry bias.
+          </p>
+        </div>
+
+        <div class="bg-white p-8 rounded-3xl shadow-sm border border-gray-100">
+          <div class="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center text-blue-600 mb-4 text-2xl">🩺</div>
+          <h3 class="text-xl font-bold text-secondary mb-2">Health Research</h3>
+          <p class="text-gray-500 text-sm leading-relaxed">
+            Analysis of the latest clinical trials on metabolic health, longevity, and preventative dietary interventions.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Clinical Tools -->
+  <section class="py-24 bg-white relative overflow-hidden">
+     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+       <div class="text-center max-w-2xl mx-auto mb-12">
+         <h2 class="text-3xl font-serif font-bold text-secondary mb-4">Clinical Tools</h2>
+       </div>
+       
+       <div class="grid md:grid-cols-3 gap-6">
+         {[
+           { title: 'TDEE Estimator', desc: 'Metabolic Calculation', href: '/tools/calorie-calculator' },
+           { title: 'Additive Toxicology', desc: 'Safety Database', href: '/tools/additive-checker' },
+           { title: 'NOVA Algorithm', desc: 'Processing Analysis', href: '/tools/ingredient-risk' }
+         ].map(tool => (
+           <a href={tool.href} class="bg-surface-100 p-6 rounded-2xl shadow-sm hover:shadow-md transition-all flex items-center justify-between group border border-transparent hover:border-gray-200">
+             <div>
+               <h3 class="font-bold text-secondary">{tool.title}</h3>
+               <p class="text-xs text-gray-500">{tool.desc}</p>
+             </div>
+             <span class="w-8 h-8 rounded-full bg-white flex items-center justify-center text-secondary group-hover:bg-primary group-hover:text-white transition-colors shadow-sm">
+               &rarr;
+             </span>
+           </a>
+         ))}
+       </div>
+     </div>
+  </section>
+
+  <!-- Editor's Briefing -->
+  <section class="bg-beige pt-8 pb-16">
+    <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center bg-white p-8 rounded-3xl shadow-sm border border-orange-100 relative">
+      <span class="absolute top-0 transform -translate-y-1/2 left-1/2 -translate-x-1/2 bg-secondary text-white px-4 py-1 rounded-full text-xs font-bold uppercase tracking-widest">
+        Editor's Briefing
+      </span>
+      <p class="font-serif text-xl text-secondary italic">
+        "This week, we're tracking the FDA's new sodium reduction guidelines and a groundbreaking study on plant-based protein bioavailability. Stay informed, stay healthy."
+      </p>
+      <div class="flex items-center justify-center mt-4 gap-2">
+         <div class="w-8 h-8 bg-gray-200 rounded-full overflow-hidden">
+           <img src="https://ui-avatars.com/api/?name=Editor+In+Chief&background=random" alt="Editor" />
+         </div>
+         <span class="text-sm font-bold text-gray-500">— Shubham Nayak, Editor-in-Chief</span>
+      </div>
+    </div>
+  </section>
+
+</Layout>

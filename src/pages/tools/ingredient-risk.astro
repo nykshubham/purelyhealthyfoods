@@ -1,0 +1,20 @@
+---
+import Layout from '../../layouts/Layout.astro';
+---
+
+<Layout title="Ingredient Risk - PurelyHealthyFoods">
+  <div class="max-w-3xl mx-auto px-4 py-16">
+    <a href="/tools" class="text-gray-500 hover:text-primary mb-4 inline-block">&larr; Back to Tools</a>
+    <h1 class="text-3xl font-bold text-gray-900 mb-8">Ingredient Risk Score</h1>
+    
+    <div class="bg-white shadow-lg rounded-2xl p-8 border border-gray-100">
+      <p class="mb-4 text-gray-600">Paste the full ingredient list from a package to analyze its processing level and potential health risks.</p>
+      
+      <textarea class="w-full h-32 rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary p-4 border mb-4" placeholder="Water, Sugar, Vegetable Oil, Modified Starch..."></textarea>
+      
+      <button class="w-full bg-secondary text-white font-bold py-3 rounded-xl shadow-lg hover:bg-orange-800 transition-colors">
+        Analyze Ingredients
+      </button>
+    </div>
+  </div>
+</Layout>

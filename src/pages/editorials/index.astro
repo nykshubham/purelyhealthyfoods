@@ -1,0 +1,51 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { getCollection } from 'astro:content';
+import FormattedDate from '../../components/FormattedDate.astro';
+
+const posts = (await getCollection('editorials')).sort(
+	(a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
+);
+---
+
+<Layout title="Editorials - PurelyHealthyFoods" description="In-depth analysis and expert opinions.">
+	<section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 bg-beige min-h-screen">
+    <div class="text-center mb-16">
+      <span class="text-primary font-bold tracking-widest uppercase text-sm mb-2 block">Opinion & Analysis</span>
+      <h1 class="text-5xl md:text-6xl font-serif font-bold text-secondary mb-4">Editorials</h1>
+      <p class="text-lg text-gray-500">Deep dives into the science and politics of food.</p>
+    </div>
+
+    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+      {posts.map((post) => (
+        <article class="flex flex-col bg-white rounded-4xl overflow-hidden shadow-sm hover:shadow-2xl transition-shadow duration-300 group border-t-4 border-primary">
+           <a href={`/editorials/${post.slug}/`} class="h-64 overflow-hidden block relative grayscale group-hover:grayscale-0 transition-all duration-500">
+             <img src={post.data.heroImage} alt={post.data.title} class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
+             <div class="absolute inset-0 bg-secondary/20 group-hover:bg-transparent transition-colors"></div>
+           </a>
+           <div class="p-8 flex-1 flex flex-col">
+             <div class="mb-4">
+               <span class="text-xs font-bold text-primary tracking-wider uppercase border border-primary px-2 py-1 rounded-full">Editorial</span>
+             </div>
+             
+             <h2 class="text-3xl font-serif font-bold mb-4 text-secondary group-hover:text-primary transition-colors leading-tight">
+               <a href={`/editorials/${post.slug}/`}>
+                 {post.data.title}
+               </a>
+             </h2>
+             <p class="text-gray-500 text-base mb-6 line-clamp-4 flex-1 italic">
+               "{post.data.description}"
+             </p>
+             
+             <div class="mt-auto flex items-center justify-between border-t border-gray-100 pt-4">
+                <div class="flex items-center gap-2">
+                  <span class="text-sm font-bold text-secondary">{post.data.author}</span>
+                </div>
+                <span class="text-xs text-gray-400"><FormattedDate date={post.data.pubDate} /></span>
+             </div>
+           </div>
+        </article>
+      ))}
+    </div>
+  </section>
+</Layout>

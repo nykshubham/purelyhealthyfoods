@@ -1,0 +1,28 @@
+---
+import Layout from '../../layouts/Layout.astro';
+---
+
+<Layout title="Additive Checker - PurelyHealthyFoods">
+  <div class="max-w-3xl mx-auto px-4 py-16">
+    <a href="/tools" class="text-gray-500 hover:text-primary mb-4 inline-block">&larr; Back to Tools</a>
+    <h1 class="text-3xl font-bold text-gray-900 mb-8">Food Additive Checker</h1>
+    
+    <div class="bg-white shadow-lg rounded-2xl p-8 border border-gray-100">
+      <p class="mb-4 text-gray-600">Enter an E-number (e.g., E102) or additive name to check its safety status.</p>
+      
+      <div class="flex gap-4 mb-6">
+        <input type="text" class="flex-1 rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary h-12 px-4 border" placeholder="E.g. E621 or MSG" />
+        <button class="bg-primary text-white px-6 rounded-md font-bold hover:bg-green-800">Check</button>
+      </div>
+
+      <div class="border-t pt-6">
+        <h3 class="font-bold text-gray-900 mb-2">Popular Checks</h3>
+        <div class="flex flex-wrap gap-2">
+          {['E621 (MSG)', 'E951 (Aspartame)', 'E102 (Tartrazine)', 'Nitrates'].map(item => (
+            <span class="px-3 py-1 bg-gray-100 rounded-full text-sm text-gray-700 cursor-pointer hover:bg-gray-200">{item}</span>
+          ))}
+        </div>
+      </div>
+    </div>
+  </div>
+</Layout>

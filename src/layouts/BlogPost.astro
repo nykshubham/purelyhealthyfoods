@@ -1,0 +1,77 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import Layout from './Layout.astro';
+import FormattedDate from '../components/FormattedDate.astro';
+
+type Props = CollectionEntry<'posts'>['data'] & {
+  headings: { depth: number; slug: string; text: string }[];
+};
+
+const { title, description, pubDate, updatedDate, heroImage, author, headings } = Astro.props;
+---
+
+<Layout title={title} description={description} image={heroImage}>
+	<article class="bg-white min-h-screen">
+    
+    <!-- Hero Header -->
+    <header class="relative h-[60vh] min-h-[400px]">
+      <div class="absolute inset-0">
+        {heroImage && <img src={heroImage} alt="" class="w-full h-full object-cover" />}
+        <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent"></div>
+      </div>
+      
+      <div class="absolute bottom-0 left-0 w-full p-8 md:p-16 text-center text-white">
+        <div class="max-w-4xl mx-auto">
+          <span class="inline-block bg-accent text-secondary font-bold px-4 py-1 rounded-full uppercase tracking-wider text-sm mb-6">
+            {Astro.props.category}
+          </span>
+          <h1 class="text-4xl md:text-6xl font-serif font-bold leading-tight mb-6 drop-shadow-md">{title}</h1>
+          <div class="flex items-center justify-center space-x-6 text-base md:text-lg font-medium text-gray-200">
+             <div class="flex items-center gap-2">
+               <div class="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center">👤</div>
+               {author}
+             </div>
+             <span>•</span>
+             <FormattedDate date={pubDate} />
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-8 relative z-10 flex flex-col md:flex-row gap-12">
+      <!-- Table of Contents Sidebar -->
+      <aside class="hidden md:block md:w-1/4 flex-shrink-0 pt-12">
+        <div class="sticky top-32 p-6 bg-surface-100/50 backdrop-blur rounded-3xl border border-orange-100">
+          <h2 class="font-serif font-bold text-secondary mb-4 text-lg">Table of Contents</h2>
+          <ul class="space-y-3 text-sm border-l-2 border-orange-100 pl-4">
+            {headings.map((heading) => (
+              <li class={`pl-${(heading.depth - 1) * 2} transition-colors hover:text-primary hover:border-l-2 hover:border-primary -ml-[18px] pl-4 py-1`}>
+                <a href={`#${heading.slug}`} class="block text-gray-600 hover:text-primary">
+                  {heading.text}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </aside>
+
+      <!-- Content -->
+      <div class="w-full md:w-3/4 bg-white rounded-t-3xl p-8 md:p-12 shadow-sm prose prose-lg prose-headings:font-serif prose-headings:text-secondary prose-a:text-primary hover:prose-a:text-orange-700 prose-img:rounded-3xl max-w-none">
+        {updatedDate && (
+           <div class="bg-blue-50 text-blue-800 px-4 py-2 rounded-lg text-sm mb-8 inline-block">
+             Last updated on <FormattedDate date={updatedDate} />
+           </div>
+        )}
+        <slot />
+
+        <hr class="my-16 h-px border-0 bg-gray-100" />
+        
+        <!-- Sources Section -->
+        <section class="bg-surface-100 p-8 rounded-3xl text-sm text-gray-600 border border-orange-50">
+          <h3 class="font-bold text-secondary mb-3 text-lg font-serif">Sources & References</h3>
+          <p>This content is for informational purposes only and does not constitute medical advice. Please consult with a healthcare professional before making significant diet changes.</p>
+        </section>
+      </div>
+    </div>
+	</article>
+</Layout>

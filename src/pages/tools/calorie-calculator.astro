@@ -1,0 +1,175 @@
+---
+import Layout from '../../layouts/Layout.astro';
+---
+
+<Layout title="Basal Metabolic Rate (BMR) Calculator - PurelyHealthyFoods" description="Calculate your Basal Metabolic Rate (BMR) accurately using the Mifflin-St Jeor equation. Get personalized calorie goals for weight loss or muscle gain.">
+  <div class="max-w-4xl mx-auto px-4 py-16">
+    <a href="/tools" class="text-gray-500 hover:text-primary mb-4 inline-block">&larr; Back to Tools</a>
+    
+    <div class="text-center mb-12">
+        <h1 class="text-4xl font-serif font-bold text-secondary mb-4">Precision Basal Metabolic Rate (BMR) Calculator</h1>
+        <p class="text-gray-500 max-w-2xl mx-auto">
+            Discover your daily energy needs using the gold-standard Mifflin-St Jeor equation. 
+            Whether you want to lose fat, build muscle, or maintain weight, it starts with knowing your numbers.
+        </p>
+    </div>
+    
+    <div class="grid lg:grid-cols-2 gap-12 items-start">
+        <div class="bg-white shadow-xl rounded-3xl p-8 border border-orange-100">
+          <form id="calc-form" class="space-y-6">
+            <div class="grid grid-cols-2 gap-4">
+              <div>
+                <label class="block text-sm font-bold text-secondary mb-1">Age</label>
+                <input type="number" id="age" required class="w-full rounded-xl border-gray-200 bg-surface-100 focus:border-primary focus:ring-primary h-12 px-4 border transition-all" placeholder="25" />
+              </div>
+              <div>
+                 <label class="block text-sm font-bold text-secondary mb-1">Gender</label>
+                 <select id="gender" class="w-full rounded-xl border-gray-200 bg-surface-100 focus:border-primary focus:ring-primary h-12 px-4 border transition-all">
+                   <option value="male">Male</option>
+                   <option value="female">Female</option>
+                 </select>
+              </div>
+            </div>
+            
+            <div>
+               <label class="block text-sm font-bold text-secondary mb-1">Height (cm)</label>
+               <input type="number" id="height" required class="w-full rounded-xl border-gray-200 bg-surface-100 focus:border-primary focus:ring-primary h-12 px-4 border transition-all" placeholder="175" />
+            </div>
+    
+            <div>
+               <label class="block text-sm font-bold text-secondary mb-1">Weight (kg)</label>
+               <input type="number" id="weight" required class="w-full rounded-xl border-gray-200 bg-surface-100 focus:border-primary focus:ring-primary h-12 px-4 border transition-all" placeholder="70" />
+            </div>
+    
+            <div>
+               <label class="block text-sm font-bold text-secondary mb-1">Activity Level</label>
+               <select id="activity" class="w-full rounded-xl border-gray-200 bg-surface-100 focus:border-primary focus:ring-primary h-12 px-4 border transition-all">
+                 <option value="1.2">Sedentary (Office job, little exercise)</option>
+                 <option value="1.375">Light Exercise (1-2 days/week)</option>
+                 <option value="1.55">Moderate Exercise (3-5 days/week)</option>
+                 <option value="1.725">Heavy Exercise (6-7 days/week)</option>
+                 <option value="1.9">Athlete (2x training/day)</option>
+               </select>
+            </div>
+    
+            <button type="submit" class="w-full bg-primary text-white font-bold py-4 rounded-xl shadow-lg hover:bg-green-800 hover:shadow-xl transition-all transform hover:-translate-y-0.5">
+              Calculate My Macros
+            </button>
+          </form>
+        </div>
+
+        <div id="results" class="hidden space-y-6 animate-fade-in">
+            <div class="bg-secondary text-white p-8 rounded-3xl shadow-lg relative overflow-hidden">
+                <div class="absolute top-0 right-0 p-4 opacity-10 text-6xl">🔥</div>
+                <h3 class="text-green-200 text-sm font-bold uppercase tracking-wider mb-2">Maintenance Calories</h3>
+                <p class="text-5xl font-serif font-bold mb-1" id="tdee-result">0</p>
+                <p class="text-sm opacity-80">kcal / day to maintain current weight</p>
+            </div>
+
+            <div class="grid grid-cols-2 gap-4">
+                <div class="bg-white p-6 rounded-3xl shadow-sm border border-gray-100">
+                    <h4 class="font-bold text-secondary mb-2">Fat Loss</h4>
+                    <p class="text-2xl font-bold text-primary" id="loss-result">0</p>
+                    <p class="text-xs text-gray-500">Deficit (-500)</p>
+                </div>
+                 <div class="bg-white p-6 rounded-3xl shadow-sm border border-gray-100">
+                    <h4 class="font-bold text-secondary mb-2">Muscle Gain</h4>
+                    <p class="text-2xl font-bold text-accent" id="gain-result">0</p>
+                    <p class="text-xs text-gray-500">Surplus (+250)</p>
+                </div>
+            </div>
+            
+             <div class="bg-orange-50 p-6 rounded-3xl border border-orange-100">
+                <h4 class="font-bold text-secondary mb-2 flex items-center gap-2">
+                    <span>🧬</span> Your BMR
+                </h4>
+                <p class="text-gray-600 text-sm">
+                    Your Basal Metabolic Rate is <strong id="bmr-result" class="text-secondary">0</strong> kcal. 
+                    This is what your body burns at complete rest just to keep you alive.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Educational Content for SEO -->
+    <div class="mt-20 max-w-3xl mx-auto prose prose-green prose-lg">
+        <h2 class="font-serif text-3xl text-secondary">How This Calculator Works</h2>
+        <p>
+            We use the <strong>Mifflin-St Jeor Equation</strong>, widely considered by nutritionists and dietitians to be the most reliable formula for estimating calorie needs. Published in 1990, it has been shown to be more accurate than the older Harris-Benedict equation.
+        </p>
+        
+        <h3>The Formula</h3>
+        <p>The equation calculates your <strong>Basal Metabolic Rate (BMR)</strong> using these factors:</p>
+        <ul class="text-base list-disc pl-5 space-y-2">
+            <li><strong>Men:</strong> (10 × weight in kg) + (6.25 × height in cm) - (5 × age in years) + 5</li>
+            <li><strong>Women:</strong> (10 × weight in kg) + (6.25 × height in cm) - (5 × age in years) - 161</li>
+        </ul>
+
+        <h3>From BMR to TDEE</h3>
+        <p>
+            Your BMR is just the starting point. To find your <strong>Total Daily Energy Expenditure (TDEE)</strong>—the actual number of calories you burn—we multiply your BMR by an Activity Factor ranging from 1.2 (Sedentary) to 1.9 (Athlete).
+        </p>
+
+        <div class="bg-surface-100 p-6 rounded-2xl not-prose my-8">
+            <h4 class="font-bold text-secondary mb-2">Why does this matter?</h4>
+            <p class="text-sm text-gray-600">
+                Scientific weight management isn't about guessing. By knowing your TDEE, you can scientifically create a calorie deficit to lose fat (usually 300-500 kcal below TDEE) or a surplus to build muscle.
+            </p>
+        </div>
+    </div>
+  </div>
+</Layout>
+
+<script>
+  const form = document.getElementById('calc-form');
+  const resultsDiv = document.getElementById('results');
+  
+  const bmrDisplay = document.getElementById('bmr-result');
+  const tdeeDisplay = document.getElementById('tdee-result');
+  const lossDisplay = document.getElementById('loss-result');
+  const gainDisplay = document.getElementById('gain-result');
+
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    
+    // Get values
+    const age = parseInt(document.getElementById('age').value);
+    const gender = document.getElementById('gender').value;
+    const height = parseInt(document.getElementById('height').value);
+    const weight = parseInt(document.getElementById('weight').value);
+    const activity = parseFloat(document.getElementById('activity').value);
+
+    // Mifflin-St Jeor Equation
+    let bmr = (10 * weight) + (6.25 * height) - (5 * age);
+    
+    if (gender === 'male') {
+        bmr += 5;
+    } else {
+        bmr -= 161;
+    }
+
+    const tdee = bmr * activity;
+
+    // Display Result with animation
+    resultsDiv.classList.remove('hidden');
+    
+    // Animate numbers
+    animateValue(bmrDisplay, 0, Math.round(bmr), 1000);
+    animateValue(tdeeDisplay, 0, Math.round(tdee), 1000);
+    animateValue(lossDisplay, 0, Math.round(tdee - 500), 1000);
+    animateValue(gainDisplay, 0, Math.round(tdee + 250), 1000);
+  });
+
+  function animateValue(obj, start, end, duration) {
+    let startTimestamp = null;
+    const step = (timestamp) => {
+      if (!startTimestamp) startTimestamp = timestamp;
+      const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+      obj.innerHTML = Math.floor(progress * (end - start) + start).toLocaleString();
+      if (progress < 1) {
+        window.requestAnimationFrame(step);
+      }
+    };
+    window.requestAnimationFrame(step);
+  }
+</script>

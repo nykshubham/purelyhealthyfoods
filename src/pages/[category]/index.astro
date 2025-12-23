@@ -1,0 +1,125 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { getCollection } from 'astro:content';
+import FormattedDate from '../../components/FormattedDate.astro';
+
+export async function getStaticPaths() {
+  const news = await getCollection('news');
+  const editorials = await getCollection('editorials');
+  const research = await getCollection('research');
+  const posts = await getCollection('posts'); // Legacy or general
+
+  // Combine all items, ensuring they have a 'collection' property if needed, 
+  // though getCollection returns items with 'collection' string.
+  const allItems = [...news, ...editorials, ...research, ...posts];
+
+  // Get unique categories
+  const categories = [...new Set(allItems.map((item) => item.data.category).filter(Boolean))];
+  
+  // Also explicit categories requested in menu to ensure pages exist even if empty
+  const ensureCategories = [
+    'Nutrition News', 'Food Safety Alerts', 'Ingredient Exposés',
+    'Fat-loss Science', 'Foods to Avoid', 'Meal Plans', 'Myths vs Facts',
+    'Weight-loss Recipes', 'High-protein Vegetarian', 'No-maida Alternatives', 'Quick Breakfasts',
+    'Weight Management', 'Recipes'
+  ];
+  
+  // Normalize categories for URL matching (lowercase, hyphenated)
+  const normalizedCategories = new Set();
+  
+  const paths = [];
+
+  // Helper to normalize
+  const toSlug = (str) => str?.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '') || '';
+
+  // Add existing content categories
+  categories.forEach(cat => {
+      const slug = toSlug(cat);
+      if(slug) normalizedCategories.add(slug);
+  });
+
+  // Add explicit menu categories
+  ensureCategories.forEach(cat => {
+      const slug = toSlug(cat);
+      if(slug) normalizedCategories.add(slug);
+  });
+
+  // Generate paths
+  for (const slug of normalizedCategories) {
+      if (!slug) continue;
+      
+      // Filter posts that match this slug
+      const filteredPosts = allItems.filter(item => {
+          const itemCat = toSlug(item.data.category);
+          // Also match exact string if slug matches
+          return itemCat === slug;
+      });
+      
+      // Find original display name (capitalized) if possible, else title case slug
+      const originalName = ensureCategories.find(c => toSlug(c) === slug) || 
+                           categories.find(c => toSlug(c) === slug) || 
+                           slug.split('-').map(s => s.charAt(0).toUpperCase() + s.slice(1)).join(' ');
+
+      paths.push({
+          params: { category: slug },
+          props: { 
+              categoryName: originalName,
+              posts: filteredPosts.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
+          }
+      });
+  }
+
+  return paths;
+}
+
+const { categoryName, posts } = Astro.props;
+---
+
+<Layout title={`${categoryName} - PurelyHealthyFoods`} description={`Latest updates on ${categoryName}.`}>
+  <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 bg-beige min-h-screen">
+    <div class="mb-12 border-b border-orange-200 pb-8 text-center">
+      <span class="text-primary font-bold tracking-wider uppercase text-sm mb-2 block">Browsing Category</span>
+      <h1 class="text-5xl font-serif font-bold text-secondary capitalize">{categoryName}</h1>
+    </div>
+
+    {posts.length > 0 ? (
+      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+        {posts.map((post) => {
+           // Determine link based on collection
+           const link = post.collection === 'posts' ? `/blog/${post.slug}/` : `/${post.collection}/${post.slug}/`;
+           return (
+              <article class="flex flex-col bg-white rounded-4xl overflow-hidden shadow-sm hover:shadow-2xl transition-shadow duration-300 group">
+                 <a href={link} class="h-56 overflow-hidden block relative">
+                   <img src={post.data.heroImage} alt={post.data.title} class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
+                   <div class="absolute inset-0 bg-black/10 group-hover:bg-transparent transition-colors"></div>
+                 </a>
+                 <div class="p-8 flex-1 flex flex-col">
+                   <div class="flex justify-between items-center mb-4">
+                      <span class="text-xs font-bold text-primary bg-orange-50 px-2 py-1 rounded-md uppercase">{post.collection}</span>
+                   </div>
+                   <h2 class="text-2xl font-serif font-bold mb-3 text-secondary group-hover:text-primary transition-colors leading-tight">
+                     <a href={link}>
+                       {post.data.title}
+                     </a>
+                   </h2>
+                   <p class="text-gray-500 text-sm mb-6 line-clamp-3">
+                     {post.data.description}
+                   </p>
+                   <div class="mt-auto flex items-center gap-2 text-sm text-gray-400">
+                      <FormattedDate date={post.data.pubDate} />
+                   </div>
+                 </div>
+              </article>
+           );
+        })}
+      </div>
+    ) : (
+      <div class="py-24 text-center bg-white rounded-5xl border border-orange-100 shadow-sm mx-auto max-w-2xl">
+        <span class="text-6xl mb-4 block">🥬</span>
+        <h3 class="text-2xl font-serif font-bold text-secondary mb-2">Coming Soon</h3>
+        <p class="text-gray-500">We're researching content for {categoryName}. Check back shortly!</p>
+        <a href="/" class="inline-block mt-6 px-6 py-3 bg-secondary text-white rounded-full font-bold hover:bg-primary transition-colors">Return Home</a>
+      </div>
+    )}
+  </section>
+</Layout>
