@@ -2,7 +2,6 @@
 import Layout from '../layouts/Layout.astro';
 import { getCollection } from 'astro:content';
 import FormattedDate from '../components/FormattedDate.astro';
-import NewsTicker from '../components/NewsTicker.astro';
 
 // Fetch from new collections
 const news = (await getCollection('news')).sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
@@ -17,7 +16,6 @@ const recentNews = news.slice(0, 6);
 
 <Layout title="PurelyHealthyFoods - Trusted Nutrition News" description="Daily reporting on food safety, nutrition science, and metabolic health.">
 	
-  <NewsTicker />
 
   <!-- Wavy Hero Section -->
   <section class="relative bg-primary pt-20 pb-32 overflow-hidden">

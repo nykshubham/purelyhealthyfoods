@@ -2,6 +2,7 @@
 import '../styles/global.css';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
+import NewsTicker from '../components/NewsTicker.astro';
 
 interface Props {
 	title: string;
@@ -19,7 +20,7 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 		<meta charset="UTF-8" />
 		<meta name="description" content="Astro description" />
 		<meta name="viewport" content="width=device-width" />
-		<link rel="icon" type="image/svg+xml" href="https://raw.githubusercontent.com/nykshubham/purelyhealthyfoods/3efa7234901f9b4267d7e8e365e3fc4288c984de/purely%20healthy%20foods.svg" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 		<meta name="generator" content={Astro.generator} />
 
     <!-- Google Fonts -->
@@ -51,7 +52,10 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 		<meta property="twitter:image" content={new URL(image, Astro.url)} />
 	</head>
 	<body class="bg-beige text-secondary flex flex-col min-h-screen selection:bg-accent selection:text-secondary">
-		<Header />
+    <div class="sticky top-0 z-50">
+      <Header />
+      <NewsTicker />
+    </div>
     <main class="flex-grow">
 		  <slot />
     </main>
