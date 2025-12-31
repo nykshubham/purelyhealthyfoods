@@ -1,0 +1,296 @@
+---
+import Layout from '../../layouts/Layout.astro';
+---
+
+<Layout title="Ingredient Risk - PurelyHealthyFoods" description="Analyze food labels for hidden additives and processing levels.">
+  <div class="max-w-4xl mx-auto px-4 py-16">
+    <a href="/tools" class="text-gray-500 hover:text-primary mb-4 inline-flex items-center gap-1 font-medium transition-colors">
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+      Back to Tools
+    </a>
+    
+    <div class="text-center mb-12">
+      <span class="bg-orange-100 text-primary px-3 py-1 rounded-full text-xs font-bold tracking-widest uppercase mb-4 inline-block">NOVA Analysis Tool</span>
+      <h1 class="text-4xl md:text-5xl font-serif font-bold text-secondary mb-4">Ingredient Risk Analyzer</h1>
+      <p class="text-gray-600 max-w-2xl mx-auto text-lg">
+        Decode your food labels. Paste an ingredient list to instantly detect ultra-processed additives, hidden sugars, and industrial gums.
+      </p>
+    </div>
+    
+    <div class="grid md:grid-cols-3 gap-8">
+      <!-- Input Section -->
+      <div class="md:col-span-2 space-y-6">
+        <div class="bg-white shadow-xl rounded-3xl p-6 md:p-8 border border-orange-100 relative overflow-hidden group">
+          <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+            <span class="text-8xl">🔍</span>
+          </div>
+          
+          <label for="ingredients" class="block text-sm font-bold text-gray-700 mb-2 uppercase tracking-wide">Paste Ingredients List:</label>
+          <textarea 
+            id="ingredients" 
+            class="w-full h-48 rounded-2xl border-gray-200 bg-gray-50 shadow-inner focus:border-secondary focus:ring-secondary p-5 text-gray-700 placeholder-gray-400 text-base leading-relaxed transition-all resize-none" 
+            placeholder="e.g., Whole Wheat Flour, Water, High Fructose Corn Syrup, Soybean Oil, Salt, Red 40, Artificial Flavor..."
+          ></textarea>
+          
+          <div class="flex justify-between items-center mt-4">
+             <button id="clearBtn" class="text-sm text-gray-400 hover:text-red-500 transition-colors hidden">Clear</button>
+             <button id="analyzeBtn" class="bg-secondary text-white font-bold py-3 px-8 rounded-xl shadow-lg hover:bg-primary transition-all duration-300 transform hover:-translate-y-1 flex items-center gap-2">
+               <span>Analyze Risk</span>
+               <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path></svg>
+             </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Tips Sidebar -->
+      <div class="md:col-span-1 space-y-4">
+        <div class="bg-surface-100 p-6 rounded-3xl border border-white shadow-sm">
+          <h3 class="font-bold text-secondary mb-3 flex items-center gap-2">
+            <span class="text-xl">⚠️</span> Watchlist
+          </h3>
+          <ul class="text-sm text-gray-600 space-y-2">
+            <li class="flex items-start gap-2"><span class="text-red-500 font-bold">•</span> Artificial Sweeteners</li>
+            <li class="flex items-start gap-2"><span class="text-red-500 font-bold">•</span> Hydrogenated Oils</li>
+            <li class="flex items-start gap-2"><span class="text-red-500 font-bold">•</span> High Fructose Syrup</li>
+            <li class="flex items-start gap-2"><span class="text-red-500 font-bold">•</span> Artificial Colors (Red 40)</li>
+          </ul>
+        </div>
+        
+        <div class="bg-blue-50 p-6 rounded-3xl border border-blue-100">
+           <h3 class="font-bold text-blue-900 mb-2 text-sm uppercase">NOVA Classification</h3>
+           <p class="text-xs text-blue-800 leading-relaxed">
+             We use the NOVA system logic to detect Group 4 (Ultra-Processed) foods based on industrial cosmetic additives.
+           </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Results Section (Hidden by default) -->
+    <div id="results" class="hidden mt-12 animate-fade-in-up">
+       <div class="bg-white rounded-3xl shadow-2xl overflow-hidden border border-gray-100">
+         <div class="grid md:grid-cols-2">
+           
+           <!-- Score Panel -->
+           <div class="p-8 md:p-12 flex flex-col items-center justify-center bg-gradient-to-br from-surface-100 to-white md:border-r border-gray-100 text-center">
+             <h2 class="text-sm font-bold text-gray-500 uppercase tracking-widest mb-6">Health Purity Score</h2>
+             
+             <div class="relative w-48 h-48 mb-6">
+                <!-- Circular Progress Background -->
+                <svg class="w-full h-full transform -rotate-90">
+                  <circle cx="96" cy="96" r="88" stroke="currentColor" stroke-width="12" fill="transparent" class="text-gray-200" />
+                  <circle id="scoreReim" cx="96" cy="96" r="88" stroke="currentColor" stroke-width="12" fill="transparent" 
+                    class="text-green-500 transition-all duration-1000 ease-out" 
+                    stroke-dasharray="553" 
+                    stroke-dashoffset="0"
+                    stroke-linecap="round"
+                  />
+                </svg>
+                <div class="absolute inset-0 flex flex-col items-center justify-center">
+                  <span id="scoreValue" class="text-6xl font-serif font-bold text-secondary">0</span>
+                  <span class="text-gray-400 text-sm">/ 100</span>
+                </div>
+             </div>
+             
+             <div id="novaBadge" class="inline-block px-4 py-1 rounded-full text-sm font-bold bg-gray-200 text-gray-700">
+               Analyzing...
+             </div>
+           </div>
+
+           <!-- Details Panel -->
+           <div class="p-8 md:p-12">
+             <h3 class="text-2xl font-serif font-bold text-secondary mb-6">Analysis Report</h3>
+             
+             <div id="cleanState" class="hidden">
+               <div class="flex items-center gap-4 text-green-600 bg-green-50 p-4 rounded-xl mb-4">
+                 <svg class="w-8 h-8 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                 <p class="font-bold">Clean Label! No ultra-processed additives detected.</p>
+               </div>
+             </div>
+
+             <div id="dirtyState" class="">
+               <p class="text-gray-600 mb-4">We detected <span id="additivesCount" class="font-bold text-red-500">0</span> potential ultra-processed ingredients:</p>
+               <ul id="additivesList" class="space-y-3 max-h-64 overflow-y-auto pr-2 custom-scrollbar">
+                 <!-- Populated by JS -->
+               </ul>
+             </div>
+             
+             <div class="mt-8 pt-6 border-t border-gray-100">
+               <p class="text-xs text-gray-400 italic">
+                 *Disclaimer: This is an automated keyword analysis and not medical advice. "Natural Flavors" can be ambiguous.
+               </p>
+             </div>
+           </div>
+
+         </div>
+       </div>
+    </div>
+
+  </div>
+</Layout>
+
+<script>
+  // Comprehensive list of dirty keywords (NOVA 4 markers)
+  const DIRTY_KEYWORDS = [
+    // Sugars & Sweeteners
+    'high fructose', 'corn syrup', 'dextrose', 'maltodextrin', 'sucralose', 'aspartame', 'acesulfame', 'saccharin', 'invert sugar', 'glucose syrup', 'agave nectar', 'cane crystals',
+    // Oils
+    'hydrogenated', 'partially hydrogenated', 'modified palm', 'interesterified', 'soybean oil', 'canola oil', 'cottonseed oil', 'sunflower oil', 'palm kernel',
+    // Starch/Texturizers
+    'modified starch', 'modified food starch', 'corn starch', 'potato starch', 'tapioca starch', // usually refined
+    // Gums & Emulsifiers
+    'xanthan gum', 'guar gum', 'locust bean gum', 'carrageenan', 'cellulose gum', 'soy lecithin', 'sunflower lecithin', 'mono- and diglycerides', 'polysorbate', 'sorbitan',
+    // Preservatives/Colors/Flavor
+    'red 40', 'yellow 5', 'yellow 6', 'blue 1', 'artificial flavor', 'natural flavor', 'sodium benzoate', 'potassium sorbate', 'nitrate', 'nitrite', 'tbhq', 'bht', 'bha', 'msg', 'monosodium glutamate', 'disodium inosinate'
+  ];
+
+  const analyzeBtn = document.getElementById('analyzeBtn');
+  const input = document.getElementById('ingredients') as HTMLTextAreaElement;
+  const resultsDiv = document.getElementById('results');
+  const clearBtn = document.getElementById('clearBtn');
+  
+  // UI Elements
+  const scoreValue = document.getElementById('scoreValue');
+  const scoreReim = document.getElementById('scoreReim');
+  const novaBadge = document.getElementById('novaBadge');
+  const additivesList = document.getElementById('additivesList');
+  const additivesCount = document.getElementById('additivesCount');
+  const cleanState = document.getElementById('cleanState');
+  const dirtyState = document.getElementById('dirtyState');
+
+  function analyze() {
+    const text = input.value.toLowerCase();
+    if (!text.trim()) return;
+
+    // Split by comma mostly, handle parentheses if we get fancy later (simple split for now)
+    // Cleanup: remove dots, parens? regex replace
+    const rawIngredients = text.split(/,|;|\./).map(s => s.trim()).filter(s => s);
+    
+    const detected = [];
+    
+    // Check each ingredient against dirty list
+    rawIngredients.forEach((ing) => {
+       // Check if this ingredient contains any dirty keyword
+       const match = DIRTY_KEYWORDS.find(keyword => ing.includes(keyword));
+       if (match) {
+         // Capitalize for display
+         detected.push({
+           name: ing.replace(/\b\w/g, l => l.toUpperCase()),
+           reason: match
+         });
+       }
+    });
+
+    // Scoring Logic
+    // Base 100
+    // -10 for each dirty ingredient
+    let score = 100 - (detected.length * 12); 
+    if (score < 0) score = 0;
+
+    // Display
+    resultsDiv.classList.remove('hidden');
+    
+    // Animate Score
+    animateScore(score);
+    
+    // NOVA Badge
+    if (detected.length === 0) {
+      novaBadge.textContent = "NOVA 1/3: Processed / Unprocessed";
+      novaBadge.className = "inline-block px-4 py-1 rounded-full text-sm font-bold bg-green-100 text-green-800";
+      cleanState.classList.remove('hidden');
+      dirtyState.classList.add('hidden');
+    } else {
+      novaBadge.textContent = "NOVA 4: Ultra-Processed";
+      novaBadge.className = "inline-block px-4 py-1 rounded-full text-sm font-bold bg-red-100 text-red-800 animate-pulse";
+      cleanState.classList.add('hidden');
+      dirtyState.classList.remove('hidden');
+      
+      // Populate list
+      additivesCount.textContent = detected.length.toString();
+      additivesList.innerHTML = detected.map(item => `
+        <li class="flex items-start gap-3 bg-red-50 p-3 rounded-lg border border-red-100">
+          <span class="text-red-500 mt-1">
+             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+          </span>
+          <div>
+            <span class="font-bold text-gray-800 block">${item.name}</span>
+            <span class="text-xs text-red-400 uppercase tracking-wide">Marker: ${item.reason}</span>
+          </div>
+        </li>
+      `).join('');
+    }
+
+    // Scroll to results
+    resultsDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+
+  function animateScore(target) {
+    let current = 0;
+    const duration = 1000;
+    const startTime = performance.now();
+    
+    // Circle math
+    const radius = 88;
+    const circulation = 2 * Math.PI * radius; // approx 553
+    
+    const update = (time) => {
+       const elapsed = time - startTime;
+       const progress = Math.min(elapsed / duration, 1);
+       
+       // Ease out quart
+       const ease = 1 - Math.pow(1 - progress, 4);
+       
+       const val = Math.floor(target * ease);
+       scoreValue.textContent = val.toString();
+       
+       // Update circle stroke
+       // 100 score -> 0 offset (full circle)
+       // 0 score -> 553 offset (empty)
+       const offset = circulation - (val / 100) * circulation;
+       scoreReim.style.strokeDashoffset = offset.toString();
+       
+       // Color Logic
+       if (val > 80) scoreReim.classList.replace('text-yellow-500', 'text-green-500');
+       else if (val > 50) {
+         scoreReim.classList.replace('text-green-500', 'text-yellow-500');
+         scoreReim.classList.replace('text-red-500', 'text-yellow-500');
+       }
+       else {
+         scoreReim.classList.replace('text-green-500', 'text-red-500'); 
+         scoreReim.classList.replace('text-yellow-500', 'text-red-500');
+       }
+
+       if (progress < 1) requestAnimationFrame(update);
+    };
+    
+    requestAnimationFrame(update);
+  }
+
+  analyzeBtn.addEventListener('click', analyze);
+  input.addEventListener('input', () => {
+     if (input.value.length > 0) clearBtn.classList.remove('hidden');
+     else clearBtn.classList.add('hidden');
+  });
+  
+  clearBtn.addEventListener('click', () => {
+    input.value = '';
+    resultsDiv.classList.add('hidden');
+    clearBtn.classList.add('hidden');
+  });
+
+</script>
+
+<style>
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 6px;
+  }
+  .custom-scrollbar::-webkit-scrollbar-track {
+    background: #f1f1f1; 
+  }
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    background: #ddd; 
+    border-radius: 3px;
+  }
+  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: #ccc; 
+  }
+</style>

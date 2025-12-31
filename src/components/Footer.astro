@@ -1,0 +1,55 @@
+---
+const today = new Date();
+---
+
+<footer class="bg-secondary text-white mt-12 py-16 rounded-t-4xl relative overflow-hidden">
+  <!-- Fancy Curve SVG at top handled by margin/border or explicit separator in Layout -->
+  
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+    <div class="grid md:grid-cols-5 gap-12 mb-12">
+      <div class="col-span-1 md:col-span-3">
+         <div class="flex items-center gap-4 mb-6">
+            <img 
+            src="/logo.png" 
+            alt="Logo" 
+            class="h-16 w-16 bg-white rounded-full p-1"
+           />
+           <span class="font-serif text-2xl font-bold">PurelyHealthyFoods</span>
+         </div>
+         <p class="text-green-100 max-w-sm">
+           Your daily dose of nutrition facts, food safety news, and healthy living guides. scientifically backed, beautifully served.
+         </p>
+      </div>
+      
+     <div class="col-span-1 md:col-span-1">
+          <h3 class="font-serif text-xl mb-4 text-accent">Main Menu</h3>
+          <ul class="space-y-2 text-sm">
+            <li><a href="/news" class="hover:text-white transition-colors">News</a></li>
+            <li><a href="/weight-management" class="hover:text-white transition-colors">Weight Mgmt</a></li>
+            <li><a href="/recipes" class="hover:text-white transition-colors">Recipes</a></li>
+            <li><a href="/tools" class="hover:text-white transition-colors">Tools</a></li>
+            <li><a href="/blog" class="hover:text-white transition-colors">Blog</a></li>
+
+          </ul>
+      </div>
+
+      <div class="col-span-1 md:col-span-1">
+        <h3 class="font-serif text-xl mb-4 text-accent">Company</h3>
+         <ul class="space-y-2 text-sm">
+          <li><a href="/about" class="hover:text-white transition-colors">About</a></li>
+           <li><a href="/privacy" class="hover:text-white transition-colors">Privacy</a></li>
+           <li><a href="/terms" class="hover:text-white transition-colors">Terms</a></li>
+           <li><a href="/contact" class="hover:text-white transition-colors">Contact</a></li>
+         </ul>
+      </div>
+    </div>
+
+    <div class="border-t border-green-800 pt-8 flex flex-col md:flex-row justify-between items-center text-sm text-green-200">
+      <p>&copy; {today.getFullYear()} PurelyHealthyFoods. Made with 🍊 & 🥬.</p>
+      <div class="flex gap-4 mt-4 md:mt-0">
+        <!-- Social placeholders -->
+        <a href="https://www.instagram.com/purelyhealthyfoods/" class="hover:text-white transition-colors">Instagram</a>
+      </div>
+    </div>
+  </div>
+</footer>

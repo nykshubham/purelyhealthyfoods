@@ -1,0 +1,40 @@
+---
+import Layout from '../../layouts/Layout.astro';
+---
+
+<Layout title="Tools - PurelyHealthyFoods" description="Interactive health and nutrition calculators.">
+  <div class="bg-beige min-h-[50vh] pt-16 pb-32">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+      <h1 class="text-5xl md:text-6xl font-serif font-bold text-secondary mb-6">Interactive Health Tools</h1>
+      <p class="text-xl text-secondary/70 max-w-2xl mx-auto mb-16 font-sans">
+        Take control of your nutrition with our suite of free calculators and safety checkers.
+      </p>
+
+      <div class="grid md:grid-cols-3 gap-8">
+        <!-- Card 1 -->
+        <a href="/tools/calorie-calculator" class="bg-white p-10 rounded-5xl shadow-sm hover:shadow-2xl transition-all duration-300 group text-left border-b-8 border-transparent hover:border-primary">
+           <div class="w-20 h-20 bg-orange-100 rounded-3xl flex items-center justify-center text-4xl mb-8 group-hover:rotate-12 transition-transform">🔥</div>
+           <h2 class="text-3xl font-serif font-bold text-secondary mb-4">Calorie Calculator</h2>
+           <p class="text-gray-500 mb-6">Determine your daily energetic needs based on your unique body metrics.</p>
+           <span class="text-primary font-bold group-hover:underline decoration-2 underline-offset-4">Calculate Now &rarr;</span>
+        </a>
+
+        <!-- Card 2 -->
+        <a href="/tools/additive-checker" class="bg-white p-10 rounded-5xl shadow-sm hover:shadow-2xl transition-all duration-300 group text-left border-b-8 border-transparent hover:border-green-600">
+           <div class="w-20 h-20 bg-green-100 rounded-3xl flex items-center justify-center text-4xl mb-8 group-hover:rotate-12 transition-transform">🔍</div>
+           <h2 class="text-3xl font-serif font-bold text-secondary mb-4">Additive Checker</h2>
+           <p class="text-gray-500 mb-6">Instantly check E-numbers to find hidden allergens and risks.</p>
+           <span class="text-green-700 font-bold group-hover:underline decoration-2 underline-offset-4">Check Additives &rarr;</span>
+        </a>
+
+        <!-- Card 3 -->
+        <a href="/tools/ingredient-risk" class="bg-white p-10 rounded-5xl shadow-sm hover:shadow-2xl transition-all duration-300 group text-left border-b-8 border-transparent hover:border-accent">
+           <div class="w-20 h-20 bg-yellow-100 rounded-3xl flex items-center justify-center text-4xl mb-8 group-hover:rotate-12 transition-transform">📊</div>
+           <h2 class="text-3xl font-serif font-bold text-secondary mb-4">Risk Score</h2>
+           <p class="text-gray-500 mb-6">Analyze ingredient lists to see how processed a product really is.</p>
+           <span class="text-orange-600 font-bold group-hover:underline decoration-2 underline-offset-4">Get Score &rarr;</span>
+        </a>
+      </div>
+    </div>
+  </div>
+</Layout>

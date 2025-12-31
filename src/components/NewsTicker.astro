@@ -1,0 +1,36 @@
+---
+import { getCollection } from 'astro:content';
+
+const posts = (await getCollection('news'))
+  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
+  .slice(0, 7);
+---
+
+<div class="bg-secondary text-white text-sm py-2 overflow-hidden relative z-40 border-b border-green-800">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center">
+    <span class="font-bold uppercase tracking-wider text-accent text-xs mr-4 flex-shrink-0 animate-pulse">Breaking News</span>
+    
+    <div class="flex-1 overflow-hidden relative">
+      <div class="inline-block whitespace-nowrap animate-marquee">
+        {posts.map((post) => (
+          <span class="inline-block mr-12">
+            <a href={`/news/${post.slug}/`} class="hover:text-accent transition-colors">
+              {post.data.title}
+            </a>
+            <span class="ml-4 text-green-300">•</span>
+          </span>
+        ))}
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .animate-marquee {
+    animation: marquee 20s linear infinite;
+  }
+  @keyframes marquee {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+</style>
