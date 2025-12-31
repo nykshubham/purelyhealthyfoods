@@ -3,8 +3,7 @@ import { schedule } from '@netlify/functions';
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import Parser from 'rss-parser';
 import slugify from 'slugify';
-import { JSDOM } from 'jsdom';
-import { Readability } from '@mozilla/readability';
+// JSDOM and Readability removed for Netlify compatibility
 
 // --- Configuration ---
 const GITHUB_TOKEN = process.env.GITHUB_TOKEN;
@@ -104,18 +103,7 @@ function selectTopic() {
     return TOPICS[0];
 }
 
-async function fetchArticleContent(url: string): Promise<string | null> {
-    try {
-        const response = await fetch(url);
-        const html = await response.text();
-        const dom = new JSDOM(html);
-        const reader = new Readability(dom.window.document);
-        const article = reader.parse();
-        return article ? article.textContent : null;
-    } catch {
-        return null;
-    }
-}
+// fetchArticleContent removed - JSDOM not supported in Netlify execution environment
 
 async function getUnsplashImage(query: string, category: string): Promise<string> {
     if (UNSPLASH_ACCESS_KEY) {
@@ -226,8 +214,8 @@ const myHandler = async (event: any) => {
     // Generate Content
     console.log(`Generating: ${selectedItem.title}`);
     const model = genAI.getGenerativeModel({ model: 'gemini-3-flash-preview' });
-    const fullContent = await fetchArticleContent(selectedItem.link || '');
-    const contextContent = fullContent ? fullContent.slice(0, 8000) : selectedItem.contentSnippet || '';
+    // Use content snippet from feed instead of fetching full article
+    const contextContent = selectedItem.contentSnippet || selectedItem.content || '';
 
     const prompt = `
         Create valid MDX content for 'Purely Healthy Foods'.
