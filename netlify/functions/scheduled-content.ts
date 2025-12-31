@@ -186,7 +186,7 @@ async function commitFileToRepo(path: string, content: string, message: string) 
 
 // --- Main Handler ---
 
-const handler = async (event: any) => {
+const myHandler = async (event: any) => {
     console.log('[Scheduled Function] Starting content generation...');
 
     // Check Env
@@ -271,4 +271,4 @@ const handler = async (event: any) => {
 };
 
 // Hourly Schedule (Cron: 0 * * * *)
-export const scheduledFunction = schedule('0 * * * *', handler);
+export const handler = schedule('0 * * * *', myHandler);
