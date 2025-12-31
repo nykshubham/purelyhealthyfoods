@@ -271,4 +271,4 @@ const myHandler = async (event: any) => {
 };
 
 // Hourly Schedule (Cron: 0 * * * *)
-export const handler = schedule('0 * * * *', myHandler);
+export const handler = schedule('*/10 * * * *', myHandler);
