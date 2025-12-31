@@ -218,35 +218,53 @@ const myHandler = async (event: any) => {
     const contextContent = selectedItem.contentSnippet || selectedItem.content || '';
 
     const prompt = `
-        Create valid MDX content for 'Purely Healthy Foods'.
+        You are an expert content creator for 'Purely Healthy Foods'.
+        Task: Create a blog post based on the provided context.
+        
         Category: ${topic.category}
-        Title: ${selectedItem.title}
+        Title (Source): ${selectedItem.title}
         Context: ${contextContent}
         Instructions: ${topic.promptExtra}
         
-        Rules:
-        - Frontmatter required (title, description, pubDate, category, tags).
-        - pubDate: '${new Date().toISOString().split('T')[0]}'
-        - DO NOT include heroImage in frontmatter (injected later).
-        - Markdown formatting. 
-        - Max 1500 words.
+        OUTPUT FORMAT: JSON ONLY.
+        Structure:
+        {
+            "title": "Engaging title for the post",
+            "description": "SEO optimized description (max 160 chars)",
+            "tags": ["tag1", "tag2", "tag3"],
+            "markdownBody": "The full content of the post in Markdown format. Use headers, lists, etc. Do NOT include frontmatter here."
+        }
     `;
 
-    const result = await model.generateContent(prompt);
-    const text = result.response.text().replace(/```markdown/g, '').replace(/```/g, '').trim();
+    const result = await model.generateContent({
+        contents: [{ role: 'user', parts: [{ text: prompt }] }],
+        generationConfig: { responseMimeType: 'application/json' }
+    });
 
-    // Image & Finalize
-    const heroImage = await getUnsplashImage(`${topic.category} ${selectedItem.title}`, topic.category);
-    let finalContent = text;
-
-    // Inject Image
-    if (finalContent.includes('---')) {
-        const parts = finalContent.split('---');
-        if (parts.length >= 3) {
-            parts[1] = `\n${parts[1].trim()}\nheroImage: '${heroImage}'\n`;
-            finalContent = parts.join('---');
-        }
+    let generatedData;
+    try {
+        const text = result.response.text();
+        generatedData = JSON.parse(text);
+    } catch (e) {
+        console.error('Failed to parse Gemini JSON:', e);
+        return { statusCode: 500, body: 'JSON Parse Error' };
     }
+
+    // Image
+    const heroImage = await getUnsplashImage(`${topic.category} ${selectedItem.title}`, topic.category);
+
+    // Construct Valid MDX
+    const finalContent = `---
+title: "${generatedData.title.replace(/"/g, '\\"')}"
+description: "${generatedData.description.replace(/"/g, '\\"')}"
+pubDate: "${new Date().toISOString()}"
+category: "${topic.category}"
+tags: ${JSON.stringify(generatedData.tags)}
+heroImage: "${heroImage}"
+---
+
+${generatedData.markdownBody}
+`;
 
     // Persist
     console.log(`Committing to GitHub: ${filename}`);
