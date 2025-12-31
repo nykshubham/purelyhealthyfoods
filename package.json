@@ -8,7 +8,7 @@
         "build": "astro build",
         "preview": "astro preview",
         "astro": "astro",
-        "generate:content": "npx tsx scripts/generate-content.ts"
+        "generate:content": "npx tsx scripts/run-local.ts"
     },
     "dependencies": {
         "@astrojs/check": "^0.9.4",

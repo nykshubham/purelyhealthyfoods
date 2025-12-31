@@ -182,15 +182,27 @@ async function generateArticle(item: any, topic: typeof TOPICS[0]) {
     const prompt = `
 You are generating content for a fully automated publishing system.
 
-IMPORTANT CONSTRAINTS:
+This content will be published without human review.
+Failure to follow instructions will break the build.
+
+━━━━━━━━━━━━━━━━━━━━━━
+HARD CONSTRAINTS (NON-NEGOTIABLE)
+━━━━━━━━━━━━━━━━━━━━━━
 - Output MUST be valid JSON only.
 - Do NOT include markdown code fences.
 - Do NOT include YAML frontmatter.
-- Do NOT include explanations or extra text.
 - Do NOT include HTML.
 - Do NOT include emojis.
+- Do NOT include dates.
+- Do NOT include explanations, apologies, or commentary.
+- Do NOT reference schemas, formats, or instructions.
+- Do NOT invent URLs.
 
-OUTPUT FORMAT (STRICT):
+If you cannot comply exactly, return: {}
+
+━━━━━━━━━━━━━━━━━━━━━━
+OUTPUT FORMAT (STRICT)
+━━━━━━━━━━━━━━━━━━━━━━
 {
   "title": string,
   "description": string,
@@ -198,21 +210,106 @@ OUTPUT FORMAT (STRICT):
   "body": string
 }
 
-FIELD RULES:
-- title: 60–120 chars, sentence case, no quotes.
-- description: 120–180 chars, factual summary.
-- tags: Array of 3-5 relevant keywords.
-- body: Markdown only, no frontmatter, min 600 words. Start directly with content. Use ## for section headings.
+━━━━━━━━━━━━━━━━━━━━━━
+FIELD RULES
+━━━━━━━━━━━━━━━━━━━━━━
+title:
+- 60–120 characters
+- Sentence case
+- Clear, factual
+- No quotation marks
 
-CONTENT CONTEXT:
-Topic: ${topic.category}
+description:
+- 120–180 characters
+- Neutral summary
+- No promotional language
+
+tags:
+- Array of 3–5 lowercase keywords
+- Relevant, specific, non-generic
+
+body:
+- Markdown only
+- Minimum 700 words
+- Start directly with content (no intro headings)
+- Use ## for section headings
+- Natural paragraph flow
+- No bullet spam
+- No fluff
+
+━━━━━━━━━━━━━━━━━━━━━━
+INTERNAL LINKING (MANDATORY)
+━━━━━━━━━━━━━━━━━━━━━━
+Include 2–4 internal links using Markdown syntax.
+
+Rules:
+- Only link to pages that plausibly exist on a health-focused site.
+- Use descriptive anchor text (not “click here”).
+- Links must be contextually relevant.
+- Do NOT invent deep URLs.
+
+Allowed internal URL patterns:
+- /news/
+- /blog/
+- /recipes/
+- /weight-management/
+- /nutrition/
+
+Example:
+[understanding food hygiene ratings](/news/)
+[science-backed weight loss strategies](/weight-management/)
+
+━━━━━━━━━━━━━━━━━━━━━━
+EXTERNAL LINKING (MANDATORY)
+━━━━━━━━━━━━━━━━━━━━━━
+Include 1–2 external links to authoritative sources.
+
+Rules:
+- Use ONLY well-known, trustworthy domains.
+- No affiliate, marketing, or commercial blogs.
+- Link naturally within the content.
+- Do NOT over-link.
+
+Allowed domains include:
+- who.int
+- nhs.uk
+- fda.gov
+- cdc.gov
+- pubmed.ncbi.nlm.nih.gov
+- gov.uk
+- nature.com
+- bmj.com
+
+Use Markdown links.
+
+━━━━━━━━━━━━━━━━━━━━━━
+CONTENT CONTEXT
+━━━━━━━━━━━━━━━━━━━━━━
+Topic category: ${topic.category}
 Headline: "${item.title}"
-Context: ${contextContent}
-Instructions: ${topic.promptExtra}
 
-REMEMBER:
-- Return ONLY the JSON object.
-- If you cannot comply exactly, return an empty JSON object: {}
+Context (may be incomplete or partial):
+${contextContent}
+
+Additional instructions:
+${topic.promptExtra}
+
+━━━━━━━━━━━━━━━━━━━━━━
+STYLE & SEO GUIDANCE
+━━━━━━━━━━━━━━━━━━━━━━
+- Prioritize clarity and factual accuracy.
+- Write for humans first, search engines second.
+- Use natural keyword variations.
+- Avoid keyword stuffing.
+- Avoid exaggerated claims.
+- Avoid calls to action.
+- Avoid sensational or emotional framing.
+
+━━━━━━━━━━━━━━━━━━━━━━
+FINAL REMINDER
+━━━━━━━━━━━━━━━━━━━━━━
+Return ONLY the JSON object.
+Any deviation will cause build failure.
 `;
 
     try {
@@ -239,6 +336,12 @@ REMEMBER:
             !Array.isArray(generatedData.tags)
         ) {
             console.warn('Invalid Gemini response shape, skipping article');
+            return null;
+        }
+
+        // SEO Link Validation
+        if (!generatedData.body.includes('](/') || !generatedData.body.includes('](https://')) {
+            console.warn('SEO links missing, skipping article');
             return null;
         }
 

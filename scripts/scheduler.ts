@@ -4,7 +4,7 @@ import util from 'util';
 
 const execPromise = util.promisify(exec);
 
-const INTERVAL_MS = 60 * 60 * 1000; // 60 minutes
+const INTERVAL_MS = 10 * 60 * 1000; // 10 minutes
 
 async function runGenerator() {
     try {
