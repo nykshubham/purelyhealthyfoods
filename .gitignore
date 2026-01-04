@@ -1,13 +1,7 @@
-# macOS
-.DS_Store
-
-# build output
-dist/
-.astro/
-
-# deps
 node_modules/
-
-# vite
-node_modules/.vite/
+.astro/
+dist/
+.vite/
+.DS_Store
+.netlify/
 
